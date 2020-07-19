@@ -2,26 +2,16 @@ import React, {Component} from 'react';
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import DeleteIcon from '@material-ui/icons/Delete';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import axios from "axios";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import IconButton from "@material-ui/core/IconButton";
-import TableContainer from '@material-ui/core/TableContainer';
-
 
 class Form extends Component {
     constructor(props) {
         super(props);
         this.state={
             step: 0,
-            allUsers : null
+            allUsers : []
         }
     }
 
@@ -54,40 +44,7 @@ class Form extends Component {
             company:this.state.company,
             website: this.state.website
         }
-
-        axios.post(`https://jsonplaceholder.typicode.com/users`, { user })
-            .then(res => {
-                alert("User Creation Successfull");
-                var newArray = this.state.allUsers;
-                newArray.push(res.data.user)
-                this.setState({
-                    allUsers: newArray
-                })
-            })
-    }
-
-    deleteUser =(event, userId)=>{
-        event.preventDefault();
-        console.log(userId);
-        axios.delete(`https://jsonplaceholder.typicode.com/users/${userId}`)
-            .then(res => {
-                var lists = this.state.allUsers.filter(x => {
-                    return x.id !== userId;
-                })
-                this.setState({
-                    allUsers: lists
-                })
-                alert("User Deleted Successfully!")
-            })
-    }
-
-    componentDidMount() {
-        axios.get('https://jsonplaceholder.typicode.com/users')
-            .then(users=> {
-                this.setState({
-                    allUsers: users.data
-                })
-            })
+        this.props.formData(user)
     }
 
     render() {
@@ -204,9 +161,7 @@ class Form extends Component {
                                                 </Grid>
                                             </Grid>
                                             : ''
-
                                 }
-
                             </div>
                             <div style={{margin : '10px'}}>
                                 <Button disabled={this.state.step === 0} onClick={this.onPrev}>
@@ -217,46 +172,6 @@ class Form extends Component {
                                 </Button>
                             </div>
                         </Paper>
-                        <Typography variant="h6" gutterBottom>
-                            List of All Users
-                        </Typography>
-                        <TableContainer  component={Paper}>
-                            <Table aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Name</TableCell>
-                                        <TableCell align="left">Email</TableCell>
-                                        <TableCell align="left">username</TableCell>
-                                        <TableCell align="left">Phone</TableCell>
-                                        <TableCell align="left">Actions</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                {
-                                    this.state.allUsers === null ?
-                                        <TableBody>
-                                            <CircularProgress/>
-                                        </TableBody>
-                                        :
-                                        <TableBody>
-                                            {this.state.allUsers.map((row) => (
-                                                <TableRow key={row.name}>
-                                                    <TableCell component="th" scope="row">
-                                                        {row.name}
-                                                    </TableCell>
-                                                    <TableCell align="left">{row.email}</TableCell>
-                                                    <TableCell align="left">{row.address.city}</TableCell>
-                                                    <TableCell align="left">{row.phone}</TableCell>
-                                                    <TableCell align="left">
-                                                        <IconButton aria-label="delete">
-                                                            <DeleteIcon fontSize="medium" onClick={event => this.deleteUser(event, row.id)}/>
-                                                        </IconButton>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                }
-                            </Table>
-                        </TableContainer>
                     </Grid>
                     <Grid item xs={2} sm={2}>
                     </Grid>
