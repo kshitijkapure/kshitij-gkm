@@ -56,7 +56,6 @@ function App() {
                 }
                 newArray.push(newObj);
                 setAllData(newArray);
-                console.log(newArray)
                 alert("User Creation Successfull");
             })
     }
